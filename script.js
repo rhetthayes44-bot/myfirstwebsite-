@@ -1,52 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const elements = document.querySelectorAll(".navbar, .hero-copy, .hero-card");
+  const menuToggle = document.querySelector(".menu-toggle");
+  const menu = document.querySelector(".menu");
 
-  elements.forEach((element, index) => {
-    element.classList.add("animate-in");
-    element.style.animationDelay = `${index * 0.15}s`;
+  menuToggle.addEventListener("click", () => {
+    const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+    menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+    menuToggle.setAttribute(
+      "aria-label",
+      isExpanded ? "Open navigation menu" : "Close navigation menu",
+    );
+    menu.classList.toggle("is-open", !isExpanded);
   });
 
-  const particlesContainer = document.querySelector(".particles");
-
-  if (particlesContainer) {
-    const particleCount = 18;
-
-    for (let i = 0; i < particleCount; i += 1) {
-      const dot = document.createElement("span");
-      dot.className = "particle";
-
-      const size = Math.random() * 5 + 2;
-      const left = Math.random() * 100;
-      const top = Math.random() * 100;
-      const duration = Math.random() * 8 + 8;
-      const delay = Math.random() * 5;
-
-      dot.style.width = `${size}px`;
-      dot.style.height = `${size}px`;
-      dot.style.left = `${left}%`;
-      dot.style.top = `${top}%`;
-      dot.style.animationDuration = `${duration}s`;
-      dot.style.animationDelay = `${delay}s`;
-
-      particlesContainer.appendChild(dot);
+  menu.addEventListener("click", (event) => {
+    if (event.target.closest("a")) {
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Open navigation menu");
+      menu.classList.remove("is-open");
     }
-  }
+  });
 
-  const main = document.querySelector(".main");
+  const status = document.querySelector(".form-status");
 
-  if (main) {
-    main.addEventListener("pointermove", (event) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (event.clientX / innerWidth - 0.5) * 14;
-      const y = (event.clientY / innerHeight - 0.5) * 14;
+  document.querySelector("#signup-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    status.textContent =
+      "Thanks for your interest. Connect an account service to enable sign-up.";
+  });
 
-      document.documentElement.style.setProperty("--mouse-x", `${x}px`);
-      document.documentElement.style.setProperty("--mouse-y", `${y}px`);
+  document.querySelector("#login-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    status.textContent =
+      "Log in will be available once member accounts are connected.";
+  });
+
+  document.querySelectorAll("[data-provider]").forEach((button) => {
+    button.addEventListener("click", () => {
+      status.textContent = `${button.dataset.provider} sign-up needs an account service to be connected.`;
     });
-
-    main.addEventListener("pointerleave", () => {
-      document.documentElement.style.setProperty("--mouse-x", "0px");
-      document.documentElement.style.setProperty("--mouse-y", "0px");
-    });
-  }
+  });
 });
